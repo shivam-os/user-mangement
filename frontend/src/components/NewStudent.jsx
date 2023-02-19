@@ -1,21 +1,19 @@
 import { useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
-export default function EditStudent() {
-  const { state } = useLocation();
+export default function NewStudent() {
   const navigate = useNavigate();
 
-  const [name, setName] = useState(state.name);
-  const [email, setEmail] = useState(state.email);
-  const [gender, setGender] = useState(state.gender);
-  const [marks, setMarks] = useState(state.marks);
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [gender, setGender] = useState("");
+  const [marks, setMarks] = useState("");
 
   const allStudents = () => {
     navigate("/");
   };
 
-  const editStudent = async (e) => {
-    e.preventDefault();
+  const createStudent = async (e) => {
     const student = {
       name: name,
       email: email,
@@ -23,19 +21,16 @@ export default function EditStudent() {
       marks: marks,
     };
 
-    const response = await fetch(
-      `http://localhost:5000/api/students/${state.rno}`,
-      {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(student),
-      }
-    );
+    const response = await fetch(`http://localhost:5000/api/students/new`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(student),
+    });
     const data = await response.json();
     console.log(data);
-    alert("Data updated successfully!");
+    alert("Student created successfully!");
   };
 
   return (
@@ -44,9 +39,9 @@ export default function EditStudent() {
         <i className="fa-solid fa-users"></i> All Students
       </button>
       <form className="ps-5 m-3">
-        <h2 className="text-center">Update Student</h2>
+        <h2 className="text-center">Create Student</h2>
         <p className="text-center mb-5">
-          Use the below form to update an account
+          Use the below form to create an account
         </p>
         <div className="mb-3">
           <label htmlFor="name" className="form-label">
@@ -60,6 +55,7 @@ export default function EditStudent() {
             value={name}
             onChange={(e) => setName(e.target.value)}
             required
+            placeholder="John Doe"
           />
         </div>
         <div className="mb-3">
@@ -74,6 +70,7 @@ export default function EditStudent() {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
+            placeholder="example@test.com"
           />
         </div>
         <div className="mb-3">
@@ -122,12 +119,13 @@ export default function EditStudent() {
             value={marks}
             onChange={(e) => setMarks(e.target.value)}
             required
+            placeholder="300"
           />
         </div>
         <button
           type="submit"
           className="btn btn-primary"
-          onClick={(e) => editStudent(e)}
+          onClick={(e) => createStudent(e)}
         >
           Save
         </button>
